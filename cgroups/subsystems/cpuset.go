@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"runtime"
 	"strconv"
 )
 
@@ -15,8 +16,18 @@ func (s *CpusetSubSystem) Set(cgroupPath string, res *ResourceConfig) error {
 	if subsysCgroupPath, err := GetCgroupPath(s.Name(), cgroupPath, true); err == nil {
 		if res.CpuSet != "" {
 			if err := ioutil.WriteFile(path.Join(subsysCgroupPath, "cpuset.cpus"), []byte(res.CpuSet), 0644); err != nil {
-				return fmt.Errorf("set cgroup cpuset fail %v", err)
+				return fmt.Errorf("set cgroup cpuset.cpus fail %v", err)
 			}
+		} else {
+			numCPU := runtime.NumCPU()
+			cpuset := fmt.Sprintf("0-%d", numCPU-1)
+			if err := ioutil.WriteFile(path.Join(subsysCgroupPath, "cpuset.cpus"), []byte(cpuset), 0644); err != nil {
+				return fmt.Errorf("set cgroup cpuset.cpus fail %v", err)
+			}
+		}
+		//cpuset cgroup在把一个进程加入tasks之前必须在cpuset.cpus和cpuset.mems中都有值，否则会报no space left
+		if err := ioutil.WriteFile(path.Join(subsysCgroupPath, "cpuset.mems"), []byte(strconv.Itoa(0)), 0644); err != nil {
+			return fmt.Errorf("set cgroup cpuset.mems fail %v", err)
 		}
 		return nil
 	} else {

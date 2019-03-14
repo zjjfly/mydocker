@@ -10,15 +10,16 @@ type CgroupManager struct {
 	ResourceConfig *subsystems.ResourceConfig
 }
 
-func NewCgroupManager(path string) *CgroupManager {
+func NewCgroupManager(path string, res *subsystems.ResourceConfig) *CgroupManager {
 	return &CgroupManager{
-		Path: path,
+		Path:           path,
+		ResourceConfig: res,
 	}
 }
 
-func (c *CgroupManager) Set(res *subsystems.ResourceConfig) error {
+func (c *CgroupManager) Set() error {
 	for _, subSysIns := range subsystems.SubsystemsIns {
-		if err := subSysIns.Set(c.Path, res); err != nil {
+		if err := subSysIns.Set(c.Path, c.ResourceConfig); err != nil {
 			log.Error(err.Error())
 		}
 	}

@@ -16,9 +16,9 @@ func Run(tty bool, command string, res *subsystems.ResourceConfig) {
 	if err := parent.Start(); err != nil {
 		log.Error(err)
 	}
-	cgroupManager := cgroups.NewCgroupManager("mydocker-cgroup")
+	cgroupManager := cgroups.NewCgroupManager("mydocker-cgroup", res)
 	defer cgroupManager.Destroy()
-	cgroupManager.Set(res)
+	cgroupManager.Set()
 	cgroupManager.Apply(parent.Process.Pid)
 	parent.Wait()
 }
