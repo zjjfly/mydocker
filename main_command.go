@@ -33,12 +33,15 @@ var runCommand = cli.Command{
 		if len(context.Args()) < 1 {
 			log.Error("Missing container command")
 		}
-		cmd := context.Args().Get(0)
+		var cmdArray []string
+		for _, arg := range context.Args() {
+			cmdArray = append(cmdArray, arg)
+		}
 		tty := context.Bool("it")
 		memoryLimit := context.String("m")
 		cpuLimit := context.String("cpushare")
 		cpuSetLimit := context.String("cpuset")
-		Run(tty, cmd, &subsystems.ResourceConfig{
+		Run(tty, cmdArray, &subsystems.ResourceConfig{
 			MemoryLimit: memoryLimit,
 			CpuSet:      cpuSetLimit,
 			CpuShare:    cpuLimit,
@@ -52,8 +55,6 @@ var initCommand = cli.Command{
 	Usage: `Init container process run user's process in container.Do not call it outside`,
 	Action: func(context *cli.Context) error {
 		log.Infof("Init come on")
-		cmd := context.Args().Get(0)
-		log.Infof("Init Command %s", cmd)
-		return container.RunContainerInitProcess(cmd, nil)
+		return container.RunContainerInitProcess()
 	},
 }

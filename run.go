@@ -5,10 +5,12 @@ import (
 	"github.com/zjjfly/mydocker/cgroups"
 	"github.com/zjjfly/mydocker/cgroups/subsystems"
 	"github.com/zjjfly/mydocker/container"
+	"os"
+	"strings"
 )
 
-func Run(tty bool, command string, res *subsystems.ResourceConfig) {
-	parent := container.NewParentProcess(tty, command)
+func Run(tty bool, cmdArray []string, res *subsystems.ResourceConfig) {
+	parent, writePipe := container.NewParentProcess(tty)
 	if parent == nil {
 		log.Errorf("New parent process error")
 		return
@@ -20,5 +22,13 @@ func Run(tty bool, command string, res *subsystems.ResourceConfig) {
 	defer cgroupManager.Destroy()
 	cgroupManager.Set()
 	cgroupManager.Apply(parent.Process.Pid)
+	sendInitCommand(cmdArray, writePipe)
 	parent.Wait()
+}
+
+func sendInitCommand(cmdArray []string, writePipe *os.File) {
+	command := strings.Join(cmdArray, " ")
+	log.Infof("command all is %s", command)
+	writePipe.WriteString(command)
+	writePipe.Close()
 }
