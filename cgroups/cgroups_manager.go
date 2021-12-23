@@ -1,7 +1,7 @@
 package cgroups
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/zjjfly/mydocker/cgroups/subsystems"
 )
 

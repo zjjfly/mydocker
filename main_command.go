@@ -1,7 +1,7 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"github.com/zjjfly/mydocker/cgroups/subsystems"
 	"github.com/zjjfly/mydocker/container"

@@ -1,4 +1,0 @@
-package: .
-import:
-  - package: github.com/urfave/cli
-  - package: github.com/Sirupsen/logrus
