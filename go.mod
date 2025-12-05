@@ -5,7 +5,7 @@ go 1.17
 replace github.com/Sirupsen/logrus => github.com/sirupsen/logrus v1.8.1
 
 require (
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.8.3
 	github.com/urfave/cli v1.22.5
 )
 
